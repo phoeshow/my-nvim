@@ -1,0 +1,10 @@
+tags
+test.sh
+.luarc.json
+nvim
+
+spell/
+
+nvim-pack-lock.json
+
+.DS_Store

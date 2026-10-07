@@ -1,0 +1,87 @@
+vim.pack.add({
+  -- Colorscheme
+  { src = "https://github.com/catppuccin/nvim", name = "catppuccin" },
+
+  -- Dependencies
+  "https://github.com/nvim-tree/nvim-web-devicons",
+
+  -- File Explorer
+  "https://github.com/nvim-tree/nvim-tree.lua",
+
+  -- Snacks
+  "https://github.com/folke/snacks.nvim",
+
+  -- Statusline
+  "https://github.com/nvim-lualine/lualine.nvim",
+  "https://github.com/rebelot/heirline.nvim",
+
+  -- Treesitter
+  { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },
+
+  -- LSP
+  "https://github.com/mason-org/mason.nvim",
+  "https://github.com/mason-org/mason-lspconfig.nvim",
+  "https://github.com/neovim/nvim-lspconfig",
+  "https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim",
+  "https://github.com/folke/lazydev.nvim",
+
+  -- Blink.cmp
+  "https://github.com/rafamadriz/friendly-snippets",
+  "https://github.com/saghen/blink.lib",
+  "https://github.com/saghen/blink.cmp",
+
+  -- Formatting
+  "https://github.com/stevearc/conform.nvim",
+
+  -- Auto pairs
+  "https://github.com/windwp/nvim-autopairs",
+  "https://github.com/windwp/nvim-ts-autotag",
+
+  -- Git
+  "https://github.com/lewis6991/gitsigns.nvim",
+  "https://github.com/sindrets/diffview.nvim",
+}, {
+  confirm = false,
+  load = function() end,
+})
+
+local pack = require("core.pack")
+
+pack.setup({
+  -- -------------------------------------------------------------------------
+  -- Immediate
+  -- -------------------------------------------------------------------------
+  { mod = "catppuccin", packadd = { "catppuccin" } },
+
+  -- -------------------------------------------------------------------------
+  -- VimEnter (non-blocking — loads after init but before UI renders)
+  -- -------------------------------------------------------------------------
+  { mod = "snacks", event = "VimEnter", packadd = { "snacks.nvim" } },
+  { mod = "nvim-tree", event = "VimEnter", packadd = { "nvim-web-devicons", "nvim-tree.lua" } },
+
+  -- -------------------------------------------------------------------------
+  -- UIEnter (non-blocking — loads after first frame renders)
+  -- -------------------------------------------------------------------------
+  -- { mod = "lualine", event = "UIEnter", packadd = { "lualine.nvim" }},
+  { mod = "heirline", event = "UIEnter", packadd = { "heirline.nvim" } },
+
+  -- -------------------------------------------------------------------------
+  -- BufReadPre / BufNewFile (core file-level features)
+  -- -------------------------------------------------------------------------
+  { mod = "lsp", event = { "BufReadPre", "BufNewFile" }, packadd = { "nvim-lspconfig", "mason.nvim", "mason-lspconfig.nvim", "mason-tool-installer.nvim" } },
+  { mod = "lsp", fn = "lazydev", event = { "BufReadPre", "BufNewFile" }, pattern = { "*.lua" }, packadd = { "lazydev.nvim" } },
+  { mod = "editing", fn = "autotag", event = { "BufReadPre", "BufNewFile" }, packadd = { "nvim-ts-autotag" } },
+  { mod = "treesitter", event = { "BufReadPre", "BufNewFile" }, packadd = { "nvim-treesitter" } },
+  { mod = "git", fn = "gitsigns", event = { "BufReadPre", "BufNewFile" }, packadd = { "gitsigns.nvim" } },
+
+  -- -------------------------------------------------------------------------
+  -- InsertEnter / CmdlineEnter (completion)
+  -- -------------------------------------------------------------------------
+  { mod = "editing", fn = "autopairs", event = { "InsertEnter", "CmdlineEnter" }, packadd = { "nvim-autopairs" } },
+  { mod = "completion", event = { "InsertEnter", "CmdlineEnter" }, packadd = { "friendly-snippets", "blink.lib", "blink.cmp" } },
+
+  --  -- -------------------------------------------------------------------------
+  -- BufWritePre (formatting on save — conform has its own internal guard)
+  -- -------------------------------------------------------------------------
+  { mod = "editing", fn = "format", event = { "BufWritePre" }, packadd = { "conform.nvim" } },
+})
