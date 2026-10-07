@@ -39,6 +39,9 @@ vim.pack.add({
   -- Formatting
   "https://github.com/stevearc/conform.nvim",
 
+  -- Linter
+  "https://github.com/mfussenegger/nvim-lint",
+
   -- Auto pairs
   "https://github.com/windwp/nvim-autopairs",
   "https://github.com/windwp/nvim-ts-autotag",
@@ -84,6 +87,7 @@ pack.setup({
   { mod = "treesitter", event = { "BufReadPre", "BufNewFile" }, packadd = { "nvim-treesitter" } },
   { mod = "git", fn = "gitsigns", event = { "BufReadPre", "BufNewFile" }, packadd = { "gitsigns.nvim" } },
   { mod = "editing", fn = "flash", event = { "BufReadPre", "BufNewFile" }, packadd = { "flash.nvim" } },
+  { mod = "editing", fn = "lint", event = { "BufReadPre", "BufNewFile" }, packadd = { "nvim-lint" } },
   { mod = "ui", fn = "colorizer", event = { "BufReadPre", "BufNewFile" }, packadd = { "nvim-colorizer.lua" } },
 
   -- -------------------------------------------------------------------------
