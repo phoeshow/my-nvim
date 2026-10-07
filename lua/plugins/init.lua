@@ -46,6 +46,9 @@ vim.pack.add({
   -- Git
   "https://github.com/lewis6991/gitsigns.nvim",
   "https://github.com/sindrets/diffview.nvim",
+
+  -- show color text
+  "https://github.com/catgoose/nvim-colorizer.lua",
 }, {
   confirm = false,
   load = function() end,
@@ -81,6 +84,7 @@ pack.setup({
   { mod = "treesitter", event = { "BufReadPre", "BufNewFile" }, packadd = { "nvim-treesitter" } },
   { mod = "git", fn = "gitsigns", event = { "BufReadPre", "BufNewFile" }, packadd = { "gitsigns.nvim" } },
   { mod = "editing", fn = "flash", event = { "BufReadPre", "BufNewFile" }, packadd = { "flash.nvim" } },
+  { mod = "ui", fn = "colorizer", event = { "BufReadPre", "BufNewFile" }, packadd = { "nvim-colorizer.lua" } },
 
   -- -------------------------------------------------------------------------
   -- InsertEnter / CmdlineEnter (completion)

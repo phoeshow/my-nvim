@@ -17,4 +17,8 @@ function M.which_key()
   })
 end
 
+function M.colorizer()
+  require("colorizer").setup({})
+end
+
 return M
