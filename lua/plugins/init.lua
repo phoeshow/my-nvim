@@ -11,6 +11,9 @@ vim.pack.add({
   -- Snacks
   "https://github.com/folke/snacks.nvim",
 
+  -- Which-key
+  "https://github.com/folke/which-key.nvim",
+
   -- Statusline
   "https://github.com/nvim-lualine/lualine.nvim",
   "https://github.com/rebelot/heirline.nvim",
@@ -64,6 +67,7 @@ pack.setup({
   -- -------------------------------------------------------------------------
   -- { mod = "lualine", event = "UIEnter", packadd = { "lualine.nvim" }},
   { mod = "heirline", event = "UIEnter", packadd = { "heirline.nvim" } },
+  { mod = "ui", fn = "which_key", event = "UIEnter", packadd = { "which-key.nvim" } },
 
   -- -------------------------------------------------------------------------
   -- BufReadPre / BufNewFile (core file-level features)
@@ -84,4 +88,17 @@ pack.setup({
   -- BufWritePre (formatting on save — conform has its own internal guard)
   -- -------------------------------------------------------------------------
   { mod = "editing", fn = "format", event = { "BufWritePre" }, packadd = { "conform.nvim" } },
+
+  -- -------------------------------------------------------------------------
+  -- Keymap-triggered (first keypress loads the module, then replays the key)
+  -- -------------------------------------------------------------------------
+  {
+    mod = "git",
+    fn = "diffview",
+    keys = {
+      { "<leader>gd", desc = "Open Diffview" },
+      { "<leader>gh", desc = "View current file history" },
+    },
+    packadd = { "diffview.nvim" },
+  },
 })

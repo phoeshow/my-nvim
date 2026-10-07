@@ -48,6 +48,17 @@ function M.gitsigns()
   })
 end
 
-function M.diffview() end
+function M.diffview()
+  require("diffview").setup({
+    view = {
+      merge_tool = {
+        layout = "diff3_mixed",
+      },
+    },
+  })
+
+  vim.keymap.set("n", "<leader>gd", "<cmd>DiffviewOpen<cr>", { desc = "Open Diffview" })
+  vim.keymap.set("n", "<leader>gh", "<cmd>DiffviewFileHistory %<cr>", { desc = "View current file history" })
+end
 
 return M
