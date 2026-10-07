@@ -14,6 +14,9 @@ vim.pack.add({
   -- Which-key
   "https://github.com/folke/which-key.nvim",
 
+  -- Flash
+  "https://github.com/folke/flash.nvim",
+
   -- Statusline
   "https://github.com/nvim-lualine/lualine.nvim",
   "https://github.com/rebelot/heirline.nvim",
@@ -77,6 +80,7 @@ pack.setup({
   { mod = "editing", fn = "autotag", event = { "BufReadPre", "BufNewFile" }, packadd = { "nvim-ts-autotag" } },
   { mod = "treesitter", event = { "BufReadPre", "BufNewFile" }, packadd = { "nvim-treesitter" } },
   { mod = "git", fn = "gitsigns", event = { "BufReadPre", "BufNewFile" }, packadd = { "gitsigns.nvim" } },
+  { mod = "editing", fn = "flash", event = { "BufReadPre", "BufNewFile" }, packadd = { "flash.nvim" } },
 
   -- -------------------------------------------------------------------------
   -- InsertEnter / CmdlineEnter (completion)
@@ -101,4 +105,8 @@ pack.setup({
     },
     packadd = { "diffview.nvim" },
   },
+
+  -- -------------------------------------------------------------------------
+  -- Deferred (idle — load after defer ms)
+  -- -------------------------------------------------------------------------
 })
