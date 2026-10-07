@@ -1,6 +1,7 @@
 local heirline = require("heirline")
 local conditions = require("heirline.conditions")
 local utils = require("heirline.utils")
+local devicons = require("nvim-web-devicons")
 
 -- ---------------------------------------------------------------------------
 -- Colors
@@ -19,104 +20,100 @@ local function setup_colors()
     text = c.text,
     subtext0 = c.subtext0,
     subtext1 = c.subtext1,
-    lavender = c.lavender,
-    green = c.green,
-    yellow = c.yellow,
-    red = c.red,
-    peach = c.peach,
-    blue = c.blue,
+    rosewater = c.rosewater,
+    flamingo = c.flamingo,
+    pink = c.pink,
     mauve = c.mauve,
+    red = c.red,
+    maroon = c.maroon,
+    peach = c.peach,
+    yellow = c.yellow,
+    green = c.green,
     teal = c.teal,
     sky = c.sky,
+    sapphire = c.sapphire,
+    blue = c.blue,
+    lavender = c.lavender,
     diag_error = c.red,
     diag_warn = c.yellow,
-    diag_info = c.teal,
-    diag_hint = c.green,
+    diag_info = c.sky,
+    diag_hint = c.sky,
   }
 end
 
-heirline.load_colors(setup_colors)
+heirline.load_colors(setup_colors())
 
-local ViMode = {
-  -- get vim current mode, this information will be required by the provider
-  -- and the highlight functions, so we compute it only once per component
-  -- evaluation and store it as a component attribute
+-- ---------------------------------------------------------------------------
+-- Primitives
+-- ---------------------------------------------------------------------------
+local Space = { provider = " " }
+local Align = { provider = "%=" }
+local Separator = { provider = " ", hl = { fg = "surface2" } }
+
+local Mode = {
   init = function(self)
     self.mode = vim.fn.mode(1) -- :h mode()
   end,
-  -- Now we define some dictionaries to map the output of mode() to the
-  -- corresponding string and color. We can put these into `static` to compute
-  -- them at initialisation time.
   static = {
-    mode_names = { -- change the strings if you like it vvvvverbose!
-      n = "N",
-      no = "N?",
-      nov = "N?",
-      noV = "N?",
-      ["no\22"] = "N?",
-      niI = "Ni",
-      niR = "Nr",
-      niV = "Nv",
-      nt = "Nt",
-      v = "V",
-      vs = "Vs",
-      V = "V_",
-      Vs = "Vs",
-      ["\22"] = "^V",
-      ["\22s"] = "^V",
-      s = "S",
-      S = "S_",
-      ["\19"] = "^S",
-      i = "I",
-      ic = "Ic",
-      ix = "Ix",
-      R = "R",
-      Rc = "Rc",
-      Rx = "Rx",
-      Rv = "Rv",
-      Rvc = "Rv",
-      Rvx = "Rv",
-      c = "C",
-      cv = "Ex",
-      r = "...",
-      rm = "M",
-      ["r?"] = "?",
-      ["!"] = "!",
-      t = "T",
+    mode_names = {
+      n = " NORMAL",
+      no = " O-PENDING",
+      nov = " O-PENDING",
+      noV = " O-PENDING",
+      ["no\22"] = " O-PENDING",
+      niI = " NORMAL",
+      niR = " NORMAL",
+      niV = " NORMAL",
+      nt = " NORMAL",
+      v = "󰒉 VISUAL",
+      vs = "󰒉 VISUAL",
+      V = "󰒉 V-LINE",
+      Vs = "󰒉 V-LINE",
+      ["\22"] = "󰒉 V-BLOCK",
+      ["\22s"] = "󰒉 V-BLOCK",
+      s = "󰫙 SELECT",
+      S = "󰫙 S-LINE",
+      ["\19"] = "󰫙 S-BLOCK",
+      i = " INSERT",
+      ic = " INSERT",
+      ix = " INSERT",
+      R = "REPLACE",
+      Rc = "REPLACE",
+      Rx = "REPLACE",
+      Rv = "V-REPLACE",
+      Rvc = "V-REPLACE",
+      Rvx = "V-REPLACE",
+      c = " CMD",
+      cv = " CMD",
+      r = "REPLACE",
+      rm = "MORE",
+      ["r?"] = "CONFIRM",
+      ["!"] = "SHELL",
+      t = "TERM",
     },
     mode_colors = {
-      n = "red",
+      n = "lavender",
       i = "green",
-      v = "cyan",
-      V = "cyan",
-      ["\22"] = "cyan",
-      c = "orange",
-      s = "purple",
-      S = "purple",
-      ["\19"] = "purple",
-      R = "orange",
-      r = "orange",
-      ["!"] = "red",
-      t = "red",
+      v = "mauve",
+      V = "mauve",
+      ["\22"] = "mauve",
+      c = "peach",
+      s = "flamingo",
+      S = "flamingo",
+      ["\19"] = "flamingo",
+      R = "yellow",
+      r = "yellow",
+      ["!"] = "peach",
+      t = "peach",
     },
   },
-  -- We can now access the value of mode() that, by now, would have been
-  -- computed by `init()` and use it to index our strings dictionary.
-  -- note how `static` fields become just regular attributes once the
-  -- component is instantiated.
-  -- To be extra meticulous, we can also add some vim statusline syntax to
-  -- control the padding and make sure our string is always at least 2
-  -- characters long. Plus a nice Icon.
   provider = function(self)
-    return " %2(" .. self.mode_names[self.mode] .. "%)"
+    return "%2(" .. self.mode_names[self.mode] .. "%)"
   end,
-  -- Same goes for the highlight. Now the foreground will change according to the current mode.
   hl = function(self)
     local mode = self.mode:sub(1, 1) -- get only the first mode character
-    return { fg = self.mode_colors[mode], bold = true }
+    return { fg = "base", bg = self.mode_colors[mode], bold = true }
   end,
-  -- Re-evaluate the component only on ModeChanged event!
-  -- Also allows the statusline to be re-evaluated when entering operator-pending mode
   update = {
     "ModeChanged",
     pattern = "*:*",
@@ -125,30 +122,316 @@ local ViMode = {
     end),
   },
 }
+Mode = utils.surround({ "", "" }, function(self)
+  return self:mode_color()
+end, Mode)
 
-local StatusLine = { ViMode }
+-- File section
+local FileIcon = {
+  restrict = { hl = true },
+  init = function(self)
+    local filename = self.filename
+    local extension = vim.fn.fnamemodify(filename, ":e")
+    self.icon, self.icon_color = devicons.get_icon_color(filename, extension, { default = true })
+  end,
+  provider = function(self)
+    return self.icon and (self.icon .. " ") or ""
+  end,
+  hl = function(self)
+    return { fg = self.icon_color }
+  end,
+}
+local FileName = {
+  restrict = { hl = true },
+  provider = function(self)
+    local filename = vim.fn.fnamemodify(self.filename, ":t")
+    return filename == "" and "[No Name]" or filename
+  end,
+  hl = { bold = true },
+}
+local FileFlags = {
+  {
+    condition = function()
+      return vim.bo.modified
+    end,
+    provider = " [+]",
+    hl = { fg = "yellow" },
+  },
+  {
+    condition = function()
+      return not vim.bo.modifiable or vim.bo.readonly
+    end,
+    provider = "  ",
+    hl = { fg = "red" },
+  },
+}
+local FileSection = {
+  init = function(self)
+    self.filename = vim.api.nvim_buf_get_name(0)
+  end,
+  hl = { bg = "mantle", fg = "text" },
+  FileIcon,
+  FileName,
+  FileFlags,
+}
+
+local GitBranch = {
+  condition = conditions.is_git_repo,
+  init = function(self)
+    self.status_dict = vim.b.gitsigns_status_dict
+    self.ahead = vim.b.git_ahead or 0
+    self.behind = vim.b.git_behind or 0
+
+    local branch = self.status_dict.head or ""
+    local ahead_str = self.ahead > 0 and (" \u{2191}" .. self.ahead) or ""
+    local behind_str = self.behind > 0 and (" \u{2193}" .. self.behind) or ""
+    local suffix = ahead_str .. behind_str .. " "
+
+    self.full_str = " \u{e0a0} " .. branch .. suffix
+
+    local trunc_branch = branch
+    if #trunc_branch > 50 then
+      trunc_branch = trunc_branch:sub(1, 47) .. "\u{2026}"
+    end
+    self.trunc_str = " \u{e0a0} " .. trunc_branch .. suffix
+
+    self.icon_str = " \u{e0a0}" .. suffix
+  end,
+  flexible = 1,
+  -- Full: icon + full branch name + ahead/behind
+  {
+    provider = function(self)
+      return self.full_str
+    end,
+  },
+  -- Truncated: up to 20 chars + ahead/behind
+  {
+    provider = function(self)
+      return self.trunc_str
+    end,
+  },
+  -- Icon only + ahead/behind
+  {
+    provider = function(self)
+      return self.icon_str
+    end,
+  },
+  -- Nothing when no space
+  { provider = "" },
+  hl = { fg = "mauve" },
+  update = { "BufEnter", "FocusGained", "User", pattern = "GitSignsUpdate" },
+}
+local GitDiff = {
+  condition = conditions.is_git_repo,
+  init = function(self)
+    self.status_dict = vim.b.gitsigns_status_dict
+  end,
+  update = { "User", pattern = "GitSignsUpdate" },
+  {
+    provider = function(self)
+      local count = self.status_dict.added or 0
+      return count > 0 and ("+" .. count .. " ") or ""
+    end,
+    hl = { fg = "green" },
+  },
+  {
+    provider = function(self)
+      local count = self.status_dict.changed or 0
+      return count > 0 and ("~" .. count .. " ") or ""
+    end,
+    hl = { fg = "yellow" },
+  },
+  {
+    provider = function(self)
+      local count = self.status_dict.removed or 0
+      return count > 0 and ("-" .. count .. " ") or ""
+    end,
+    hl = { fg = "red" },
+  },
+}
+local MacroRec = {
+  condition = function()
+    return vim.fn.reg_recording() ~= ""
+  end,
+  update = {
+    "RecordingEnter",
+    "RecordingLeave",
+    callback = vim.schedule_wrap(function()
+      vim.cmd("redrawstatus")
+    end),
+  },
+  {
+    provider = " 󰑋 ",
+    hl = { fg = "red", bold = true },
+  },
+  utils.surround({ "[", "]" }, "", {
+    provider = function()
+      return vim.fn.reg_recording()
+    end,
+    hl = { fg = "red", bold = true },
+  }),
+}
+local Diagnostics = {
+  condition = conditions.has_diagnostics,
+  static = {
+    error_icon = " ",
+    warn_icon = " ",
+    info_icon = " ",
+    hint_icon = " ",
+  },
+  init = function(self)
+    self.errors = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
+    self.warnings = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
+    self.info = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.INFO })
+    self.hints = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINT })
+  end,
+  update = "DiagnosticChanged",
+  {
+    provider = function(self)
+      return self.errors > 0 and (" " .. self.error_icon .. self.errors) or ""
+    end,
+    hl = { fg = "diag_error" },
+  },
+  {
+    provider = function(self)
+      return self.warnings > 0 and (" " .. self.warn_icon .. self.warnings) or ""
+    end,
+    hl = { fg = "diag_warn" },
+  },
+  {
+    provider = function(self)
+      return self.info > 0 and (" " .. self.info_icon .. self.info) or ""
+    end,
+    hl = { fg = "diag_info" },
+  },
+  {
+    provider = function(self)
+      return self.hints > 0 and (" " .. self.hint_icon .. self.hints) or ""
+    end,
+    hl = { fg = "diag_hint" },
+  },
+}
+
+local LSPActive = {
+  condition = conditions.lsp_attached,
+  update = { "LspAttach", "LspDetach" },
+  provider = function()
+    local names = {}
+    for _, server in pairs(vim.lsp.get_clients({ bufnr = 0 })) do
+      table.insert(names, server.name)
+    end
+    return " [" .. table.concat(names, " ") .. "]"
+  end,
+  hl = { fg = "sky" },
+}
+
+local FileEncoding = {
+  provider = function()
+    local enc = (vim.bo.fenc ~= "" and vim.bo.fenc) or vim.o.enc
+    return enc:upper()
+  end,
+}
+
+local FileFormat = {
+  provider = function()
+    local fmt = vim.bo.fileformat
+    if fmt == "unix" then
+      return "UNIX"
+    end
+    if fmt == "dos" then
+      return "CRLF"
+    end
+    if fmt == "mac" then
+      return "CR"
+    end
+  end,
+}
+
+local RightInfo = utils.surround({ "", "" }, function(self)
+  return self:mode_color()
+end, {
+  hl = function(self)
+    return { fg = "base", bg = self:mode_color(), bold = true }
+  end,
+  FileEncoding,
+  { provider = "|" },
+  FileFormat,
+})
+
+-- Default statusline for normal buffers
+local DefaultStatusline = {
+  Mode,
+  Space,
+  FileSection,
+  Space,
+  GitBranch,
+  GitDiff,
+  MacroRec,
+  Align,
+  Diagnostics,
+  LSPActive,
+  Separator,
+  RightInfo,
+}
+
+-- Inactive statusline (dimmed, minimal with git context)
+local InactiveStatusline = {
+  condition = conditions.is_not_active,
+  {
+    provider = function()
+      local path = vim.fn.expand("%:.")
+      -- path = vim.fn.fnamemodify(path, ":.")
+      return path
+    end,
+    hl = { fg = "blue", bold = true },
+  },
+  Align,
+  {
+    provider = "%l:%c",
+    hl = { fg = "overlay0" },
+  },
+}
+
+-- ===========================================================================
+-- StatusLines (root: fallthrough = false, carries mode_color static)
+-- ===========================================================================
+local StatusLines = {
+  hl = { bg = "mantle" },
+  static = {
+    mode_colors = {
+      n = "lavender",
+      i = "green",
+      v = "mauve",
+      V = "mauve",
+      ["\22"] = "mauve",
+      c = "peach",
+      s = "flamingo",
+      S = "flamingo",
+      ["\19"] = "flamingo",
+      R = "yellow",
+      r = "yellow",
+      ["!"] = "peach",
+      t = "peach",
+    },
+    mode_color = function(self)
+      local mode = vim.fn.mode():sub(1, 1)
+      return self.mode_colors[mode] or "lavender"
+    end,
+  },
+  fallthrough = false,
+  -- SpecialStatusline,
+  -- TerminalStatusline,
+  InactiveStatusline,
+  DefaultStatusline,
+}
+
 
 -- ===========================================================================
 -- Setup
 -- ===========================================================================
 heirline.setup({
-  statusline = StatusLine,
+  statusline = StatusLines,
   -- winbar = WinBar,
   -- tabline = TabLine,
-  opts = {
-    -- disable_winbar_cb = function(args)
-    -- 	return conditions.buffer_matches({
-    -- 		buftype = { "nofile", "prompt", "help", "quickfix", "terminal" },
-    -- 		filetype = {
-    -- 			"^git.*",
-    -- 			"fugitive",
-    -- 			"neo%-tree",
-    -- 			"Trouble",
-    -- 			"lazy",
-    -- 			"alpha",
-    -- 			"dashboard",
-    -- 		},
-    -- 	}, args.buf)
-    -- end,
-  },
+  opts = { },
 })
