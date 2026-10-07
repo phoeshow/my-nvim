@@ -20,6 +20,17 @@ function M.format()
     end,
     formatters_by_ft = {
       lua = { "stylua" },
+      javascript = { "oxfmt" },
+      typescript = { "oxfmt" },
+      javascriptreact = { "oxfmt" },
+      typescriptreact = { "oxfmt" },
+      markdown = { "oxfmt" },
+      html = { "oxfmt" },
+      yaml = { "oxfmt" },
+      toml = { "oxfmt" },
+      css = { "oxfmt" },
+      json = { "oxfmt" },
+      jsonc = { "oxfmt" },
     },
   })
 end
