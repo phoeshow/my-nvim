@@ -18,8 +18,8 @@ vim.pack.add({
   "https://github.com/folke/flash.nvim",
 
   -- Statusline
-  "https://github.com/nvim-lualine/lualine.nvim",
   "https://github.com/rebelot/heirline.nvim",
+  "https://github.com/akinsho/bufferline.nvim",
 
   -- Treesitter
   { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },
@@ -89,6 +89,7 @@ pack.setup({
   { mod = "editing", fn = "flash", event = { "BufReadPre", "BufNewFile" }, packadd = { "flash.nvim" } },
   { mod = "editing", fn = "lint", event = { "BufReadPre", "BufNewFile" }, packadd = { "nvim-lint" } },
   { mod = "ui", fn = "colorizer", event = { "BufReadPre", "BufNewFile" }, packadd = { "nvim-colorizer.lua" } },
+  { mod = "ui", fn = "bufferline", event = { "BufReadPre", "BufNewFile" }, packadd = { "bufferline.nvim" } },
 
   -- -------------------------------------------------------------------------
   -- InsertEnter / CmdlineEnter (completion)

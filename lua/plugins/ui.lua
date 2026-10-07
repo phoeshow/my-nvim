@@ -21,4 +21,43 @@ function M.colorizer()
   require("colorizer").setup({})
 end
 
+function M.bufferline()
+  local bufferline = require("bufferline")
+  local colors = require("catppuccin.palettes").get_palette("mocha")
+  bufferline.setup({
+    options = {
+      diagnostics = false,
+      indicator = {
+        style = "icon",
+        icon = "▍",
+      },
+      offsets = {
+        {
+          filetype = "NvimTree",
+          text = "File Explorer",
+          text_align = "left",
+          separator = true,
+        },
+        {
+          filetype = "Outline",
+          text = "Outline",
+          text_align = "left",
+          separator = true,
+        },
+      },
+      show_buffer_close_icons = false,
+    },
+    highlights = require("catppuccin.special.bufferline").get_theme({
+      style = { "italic", "bold" },
+      custom = {
+        all = {
+          buffer_selected = {
+            fg = colors.peach,
+          },
+        },
+      },
+    }),
+  })
+end
+
 return M
