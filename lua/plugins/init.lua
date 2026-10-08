@@ -4,6 +4,7 @@ vim.pack.add({
 
   -- Dependencies
   "https://github.com/nvim-tree/nvim-web-devicons",
+  "https://github.com/nvim-lua/plenary.nvim",
 
   -- File Explorer
   "https://github.com/nvim-tree/nvim-tree.lua",
@@ -31,6 +32,9 @@ vim.pack.add({
   "https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim",
   "https://github.com/folke/lazydev.nvim",
 
+  -- Outline
+  "https://github.com/hedyhli/outline.nvim",
+
   -- Blink.cmp
   "https://github.com/rafamadriz/friendly-snippets",
   "https://github.com/saghen/blink.lib",
@@ -52,6 +56,9 @@ vim.pack.add({
 
   -- show color text
   "https://github.com/catgoose/nvim-colorizer.lua",
+
+  -- TODO comment
+  "https://github.com/folke/todo-comments.nvim"
 }, {
   confirm = false,
   load = function() end,
@@ -89,7 +96,7 @@ pack.setup({
   { mod = "editing", fn = "flash", event = { "BufReadPre", "BufNewFile" }, packadd = { "flash.nvim" } },
   { mod = "editing", fn = "lint", event = { "BufReadPre", "BufNewFile" }, packadd = { "nvim-lint" } },
   { mod = "ui", fn = "colorizer", event = { "BufReadPre", "BufNewFile" }, packadd = { "nvim-colorizer.lua" } },
-  { mod = "ui", fn = "bufferline", event = { "BufReadPre", "BufNewFile" }, packadd = { "bufferline.nvim" } },
+  -- { mod = "ui", fn = "bufferline", event = { "BufReadPre", "BufNewFile" }, packadd = { "bufferline.nvim" } },
 
   -- -------------------------------------------------------------------------
   -- InsertEnter / CmdlineEnter (completion)
@@ -118,4 +125,6 @@ pack.setup({
   -- -------------------------------------------------------------------------
   -- Deferred (idle — load after defer ms)
   -- -------------------------------------------------------------------------
+  { mod = "ui", fn = "outline", defer = 1, packadd = { "outline.nvim" } },
+  { mod = "ui", fn = "todo_comment", defer= 1, packadd = {"plenary.nvim", "todo-comments.nvim"}}
 })

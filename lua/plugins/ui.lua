@@ -60,4 +60,14 @@ function M.bufferline()
   })
 end
 
+function M.outline()
+  require("outline").setup({})
+  vim.keymap.set("n", "<leader>to", "<cmd>Outline<cr>", { desc = "Toggle outline" })
+end
+
+function M.todo_comment()
+  require("todo-comments").setup({})
+  vim.keymap.set("n", "<leader>ft", "<cmd>TodoQuickFix<cr>", {desc = "Find TODO"})
+end
+
 return M
