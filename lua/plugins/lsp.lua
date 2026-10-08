@@ -88,4 +88,8 @@ function M.lazydev()
   })
 end
 
+function M.fidget()
+  require("fidget").setup()
+end
+
 return M
