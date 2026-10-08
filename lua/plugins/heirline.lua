@@ -17,6 +17,7 @@ local function setup_colors()
     surface2 = c.surface2,
     overlay0 = c.overlay0,
     overlay1 = c.overlay1,
+    overlay2 = c.overlay2,
     text = c.text,
     subtext0 = c.subtext0,
     subtext1 = c.subtext1,
@@ -358,6 +359,25 @@ end, {
   FileFormat,
 })
 
+local Location = {
+  provider = "%l/%L:%c %P ",
+  hl = { fg = "peach" },
+}
+
+local ScrollBar = {
+  static = {
+    -- sbar = { "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█" },
+    sbar = { "🭶", "🭷", "🭸", "🭹", "🭺", "🭻" },
+  },
+  provider = function(self)
+    local curr_line = vim.api.nvim_win_get_cursor(0)[1]
+    local lines = vim.api.nvim_buf_line_count(0)
+    local i = math.floor((curr_line - 1) / lines * #self.sbar) + 1
+    return string.rep(self.sbar[i], 2)
+  end,
+  hl = { fg = "maroon", bg = "base" },
+}
+
 -- Default statusline for normal buffers
 local DefaultStatusline = {
   Mode,
@@ -369,8 +389,12 @@ local DefaultStatusline = {
   MacroRec,
   Align,
   Diagnostics,
-  LSPActive,
   Separator,
+  LSPActive,
+  Space,
+  Location,
+  ScrollBar,
+  Space,
   RightInfo,
 }
 
@@ -425,13 +449,247 @@ local StatusLines = {
   DefaultStatusline,
 }
 
+-- ===========================================================================
+-- TabLine (Bufferline)
+-- ===========================================================================
+
+-- Buffer filename (tail only)
+local TablineFileName = {
+  provider = function(self)
+    local filename = self.filename
+    filename = filename == "" and "[No Name]" or vim.fn.fnamemodify(filename, ":t")
+    return filename
+  end,
+  hl = function(self)
+    return { bold = self.is_active, italic = self.is_active }
+  end,
+}
+
+-- Modified / readonly / terminal flags per-buffer
+local TablineFileFlags = {
+  {
+    condition = function(self)
+      return vim.api.nvim_get_option_value("modified", { buf = self.bufnr })
+    end,
+    provider = " 󰷥 ",
+  },
+  {
+    condition = function(self)
+      return not vim.api.nvim_get_option_value("modifiable", { buf = self.bufnr }) or vim.api.nvim_get_option_value("readonly", { buf = self.bufnr })
+    end,
+    provider = function(self)
+      if vim.api.nvim_get_option_value("buftype", { buf = self.bufnr }) == "terminal" then
+        return "  "
+      else
+        return "  "
+      end
+    end,
+  },
+}
+
+-- Assemble filename block: icon + name + flags
+local TablineFileNameBlock = {
+  init = function(self)
+    self.filename = vim.api.nvim_buf_get_name(self.bufnr)
+  end,
+  hl = function(self)
+    if self.is_active then
+      return { fg = "base", bg = "lavender" }
+    else
+      return { bg = "surface1", fg = "subtext0" }
+    end
+  end,
+  FileIcon,
+  TablineFileName,
+  TablineFileFlags,
+}
+
+-- Wrap each buffer block in powerline surrounds matching the statusline style
+local TablineBufferBlock = utils.surround({ " ", "" }, function(self)
+  if self.is_active then
+    return "lavender"
+  else
+    return "surface1"
+  end
+end, { TablineFileNameBlock })
+
+-- Build the bufferline using heirline's make_buflist
+local BufferLine = utils.make_buflist(
+  TablineBufferBlock,
+  { provider = " ", hl = { fg = "overlay0" } }, -- left truncation
+  { provider = " ", hl = { fg = "overlay0" } } -- right truncation
+)
+
+-- Tab pages (shown only when ≥2 tabs)
+local Tabpage = {
+  provider = function(self)
+    return "%" .. self.tabnr .. "T " .. self.tabnr .. " T"
+  end,
+  hl = function(self)
+    if self.is_active then
+      return { fg = "text", bg = "surface1", bold = true }
+    else
+      return { fg = "overlay0", bg = "mantle" }
+    end
+  end,
+}
+
+local TabPages = {
+  condition = function()
+    return #vim.api.nvim_list_tabpages() >= 2
+  end,
+  { provider = "%=" },
+  utils.make_tablist(Tabpage),
+}
+
+local TabLineOffset = {
+  condition = function(self)
+    local win = vim.api.nvim_tabpage_list_wins(0)[1]
+    local bufnr = vim.api.nvim_win_get_buf(win)
+    self.winid = win
+    if vim.bo[bufnr].filetype == "NvimTree" then
+      self.title = "NvimTree"
+      return true
+    end
+  end,
+  provider = function(self)
+    local title = self.title
+    local width = vim.api.nvim_win_get_width(self.winid)
+    local pad = math.ceil((width - #title) / 2)
+    return string.rep(" ", pad) .. title .. string.rep(" ", pad)
+  end,
+  hl = function(self)
+    if vim.api.nvim_get_current_win() == self.winid then
+      return { fg = "text", bg = "surface1" }
+    else
+      return { fg = "overlay0", bg = "surface0" }
+    end
+  end,
+}
+
+local TabLine = {
+  hl = { bg = "base" },
+  TabLineOffset,
+  BufferLine,
+  Align,
+  TabPages,
+}
+
+-- ===========================================================================
+-- WinBar
+-- ===========================================================================
+local WinBarFileIcon = {
+  init = function(self)
+    local filename = self.filename
+    local extension = vim.fn.fnamemodify(filename, ":e")
+    self.icon, self.icon_color = devicons.get_icon_color(filename, extension, { default = true })
+  end,
+  provider = function(self)
+    return self.icon and (self.icon .. " ") or ""
+  end,
+  hl = function(self)
+    return { fg = self.icon_color }
+  end,
+}
+
+local PATH_SEP = package.config:sub(1, 1)
+
+local function drop_leading(path, n)
+  local pos = 1
+  for _ = 1, n do
+    pos = path:find(PATH_SEP, pos, true)
+    if not pos then
+      return nil
+    end
+    pos = pos + 1
+  end
+  return "\u{2026}" .. PATH_SEP .. path:sub(pos)
+end
+
+local WinBarFilePath = {
+  flexible = 2,
+  init = function(self)
+    self.relpath = vim.fn.fnamemodify(self.filename, ":.")
+    if self.relpath == "" then
+      self.relpath = "[No Name]"
+    end
+    self.basename = vim.fn.fnamemodify(self.filename, ":t")
+    if self.basename == "" then
+      self.basename = "[No Name]"
+    end
+  end,
+  {
+    provider = function(self)
+      return self.relpath
+    end,
+  },
+  {
+    provider = function(self)
+      return drop_leading(self.relpath, 1) or self.basename
+    end,
+  },
+  {
+    provider = function(self)
+      return drop_leading(self.relpath, 2) or self.basename
+    end,
+  },
+  {
+    provider = function(self)
+      return drop_leading(self.relpath, 3) or self.basename
+    end,
+  },
+  {
+    provider = function(self)
+      return drop_leading(self.relpath, 4) or self.basename
+    end,
+  },
+  {
+    provider = function(self)
+      return drop_leading(self.relpath, 5) or self.basename
+    end,
+  },
+  {
+    provider = function(self)
+      return self.basename
+    end,
+  },
+  hl = { bold = true },
+}
+
+local WinBar = {
+  init = function(self)
+    self.filename = vim.api.nvim_buf_get_name(0)
+  end,
+  hl = function()
+    if not conditions.is_active() then
+      return { fg = "overlay0", force = true }
+    end
+  end,
+  WinBarFileIcon,
+  WinBarFilePath,
+}
 
 -- ===========================================================================
 -- Setup
 -- ===========================================================================
 heirline.setup({
   statusline = StatusLines,
-  -- winbar = WinBar,
-  -- tabline = TabLine,
-  opts = { },
+  winbar = WinBar,
+  tabline = TabLine,
+  opts = {
+    disable_winbar_cb = function(args)
+      return conditions.buffer_matches({
+        buftype = { "nofile", "prompt", "help", "quickfix", "terminal" },
+        filetype = {
+          "^git.*",
+          "fugitive",
+          "Trouble",
+          "lazy",
+          "alpha",
+          "dashboard",
+          "NvimTree",
+        },
+      }, args.buf)
+    end,
+  },
 })
