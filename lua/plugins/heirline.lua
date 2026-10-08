@@ -49,7 +49,6 @@ heirline.load_colors(setup_colors())
 -- ---------------------------------------------------------------------------
 local Space = { provider = " " }
 local Align = { provider = "%=" }
-local Separator = { provider = " ", hl = { fg = "surface2" } }
 
 local Mode = {
   init = function(self)
@@ -366,7 +365,6 @@ local Location = {
 
 local ScrollBar = {
   static = {
-    -- sbar = { "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█" },
     sbar = { "🭶", "🭷", "🭸", "🭹", "🭺", "🭻" },
   },
   provider = function(self)
@@ -383,17 +381,16 @@ local DefaultStatusline = {
   Mode,
   Space,
   FileSection,
-  Space,
   GitBranch,
   GitDiff,
   MacroRec,
   Align,
   Diagnostics,
-  Separator,
+  Space,
   LSPActive,
   Space,
-  Location,
-  ScrollBar,
+  -- Location,
+  -- ScrollBar,
   Space,
   RightInfo,
 }
@@ -410,10 +407,6 @@ local InactiveStatusline = {
     hl = { fg = "blue", bold = true },
   },
   Align,
-  {
-    provider = "%l:%c",
-    hl = { fg = "overlay0" },
-  },
 }
 
 -- ===========================================================================
