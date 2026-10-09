@@ -19,6 +19,7 @@ end
 
 function M.colorizer()
   require("colorizer").setup({})
+  vim.keymap.set("n", "<leader>tc", "<cmd>ColorizerToggle<cr>", {desc = "Toggle colorizer"})
 end
 
 function M.bufferline()

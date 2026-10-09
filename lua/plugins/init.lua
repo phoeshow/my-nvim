@@ -20,7 +20,7 @@ vim.pack.add({
 
   -- Statusline
   "https://github.com/rebelot/heirline.nvim",
-  "https://github.com/akinsho/bufferline.nvim",
+  -- "https://github.com/akinsho/bufferline.nvim",
 
   -- Treesitter
   { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },
