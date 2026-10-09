@@ -18,8 +18,18 @@ function M.which_key()
 end
 
 function M.colorizer()
-  require("colorizer").setup({})
-  vim.keymap.set("n", "<leader>tc", "<cmd>ColorizerToggle<cr>", {desc = "Toggle colorizer"})
+  local colorizer = require("colorizer")
+  colorizer.setup({})
+  vim.keymap.set("n", "<leader>tc",function ()
+    local is_attached = colorizer.is_buffer_attached(0)
+    if is_attached then
+      colorizer.detach_from_buffer(0)
+      vim.notify("Colorizer detach", vim.log.levels.INFO )
+    else
+      colorizer.attach_to_buffer()
+      vim.notify("Colorizer attach", vim.log.levels.INFO )
+    end
+  end, {desc = "Toggle colorizer"})
 end
 
 function M.bufferline()
