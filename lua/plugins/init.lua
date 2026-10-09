@@ -60,6 +60,9 @@ vim.pack.add({
 
   -- TODO comment
   "https://github.com/folke/todo-comments.nvim",
+
+  -- Search and replace
+  "https://github.com/MagicDuck/grug-far.nvim",
 }, {
   confirm = false,
   load = function() end,
@@ -122,6 +125,14 @@ pack.setup({
       { "<leader>gh", desc = "View current file history" },
     },
     packadd = { "diffview.nvim" },
+  },
+  {
+    mod = "editing",
+    fn = "grug_far",
+    keys = {
+      { "<leader>sr", mode = { "n", "v" }, desc = "Search and Replace" },
+    },
+    packadd = { "grug-far.nvim" },
   },
 
   -- -------------------------------------------------------------------------
