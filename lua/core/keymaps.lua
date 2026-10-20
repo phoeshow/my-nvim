@@ -14,10 +14,11 @@ vim.keymap.set("n", "<leader>wv", "<CMD>vsplit<CR>", { desc = "Split window vert
 vim.keymap.set("n", "<leader>w\\", "<CMD>vsplit<CR>", { desc = "Split window vertically" })
 vim.keymap.set("n", "<leader>wd", "<c-w>c", { desc = "Delete window" })
 -- Navigate window
-vim.keymap.set("n", "<C-h>", "<C-w>h")
-vim.keymap.set("n", "<C-j>", "<C-w>j")
-vim.keymap.set("n", "<C-k>", "<C-w>k")
-vim.keymap.set("n", "<C-l>", "<C-w>l")
+-- Use smart-splits
+-- vim.keymap.set("n", "<C-h>", "<C-w>h")
+-- vim.keymap.set("n", "<C-j>", "<C-w>j")
+-- vim.keymap.set("n", "<C-k>", "<C-w>k")
+-- vim.keymap.set("n", "<C-l>", "<C-w>l")
 -- Resize window
 vim.keymap.set("n", "<C-UP>", "<CMD>resize +2<CR>", { desc = "Increase Window Height" })
 vim.keymap.set("n", "<C-Down>", "<CMD>resize -2<CR>", { desc = "Decrease Window Height" })

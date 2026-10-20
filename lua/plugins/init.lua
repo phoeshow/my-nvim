@@ -63,6 +63,10 @@ vim.pack.add({
 
   -- Search and replace
   "https://github.com/MagicDuck/grug-far.nvim",
+
+  -- Navigator in terminal pane
+  "https://github.com/smart-splits-nvim/smart-splits.nvim",
+  { src = "https://github.com/smart-splits-nvim/backend-tmux", name = "smart-splits-backend" },
 }, {
   confirm = false,
   load = function() end,
@@ -75,11 +79,12 @@ pack.setup({
   -- Immediate
   -- -------------------------------------------------------------------------
   { mod = "catppuccin", packadd = { "catppuccin" } },
+  { mod = "snacks", packadd = { "snacks.nvim" } },
+  { mod = "navigator", packadd = { "smart-splits-backend", "smart-splits.nvim" } },
 
   -- -------------------------------------------------------------------------
   -- VimEnter (non-blocking — loads after init but before UI renders)
   -- -------------------------------------------------------------------------
-  { mod = "snacks", event = "VimEnter", packadd = { "snacks.nvim" } },
   { mod = "nvim-tree", event = "VimEnter", packadd = { "nvim-web-devicons", "nvim-tree.lua" } },
 
   -- -------------------------------------------------------------------------
