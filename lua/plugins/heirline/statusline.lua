@@ -174,7 +174,7 @@ local MacroRec = {
     end),
   },
   {
-    provider = "󰑋 ",
+    provider = " ",
     hl = { fg = "red", bold = true },
   },
   utils.surround({ "[", "]" }, "", {
