@@ -6,6 +6,11 @@ local utils = require("heirline.utils")
 -- ---------------------------------------------------------------------------
 local Space = { provider = " " }
 local Align = { provider = "%=" }
+local function is_win_wide_enough(min_width)
+  return function()
+    return vim.api.nvim_win_get_width(0) > (min_width or 80)
+  end
+end
 
 -- ---------------------------------------------------------------------------
 -- Mode
@@ -186,6 +191,7 @@ local MacroRec = {
 }
 
 local FileEncoding = {
+  condition = is_win_wide_enough(),
   provider = function()
     local enc = (vim.bo.fenc ~= "" and vim.bo.fenc) or vim.o.enc
     return enc:upper()
@@ -193,6 +199,7 @@ local FileEncoding = {
   hl = { fg = "sapphire", bold = true },
 }
 local FileFormat = {
+  condition = is_win_wide_enough(),
   provider = function()
     local fmt = vim.bo.fileformat
     if fmt == "unix" then
@@ -220,6 +227,7 @@ local LSPActive = {
   hl = { fg = "sky" },
 }
 local Location = {
+  condition = is_win_wide_enough(),
   provider = "%l/%L:%c %P ",
   hl = { fg = "pink" },
 }
@@ -289,11 +297,11 @@ local InactiveStatusline = {
   FileType,
   Space,
   {
-    provider = function ()
-      local path = vim.fn.expand('%:.')
+    provider = function()
+      local path = vim.fn.expand("%:.")
       return path
     end,
-    hl = {fg = "blue",bold = true}
+    hl = { fg = "blue", bold = true },
   },
   Align,
 }

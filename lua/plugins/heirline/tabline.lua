@@ -66,7 +66,7 @@ local TablineFileNameBlock = {
   end,
   hl = function(self)
     if self.is_active then
-      return { fg = "base", bg = "lavender" }
+      return { fg = "base", bg = "peach" }
     else
       return { bg = "surface1", fg = "subtext0" }
     end
@@ -79,7 +79,7 @@ local TablineFileNameBlock = {
 -- Wrap each buffer block in powerline surrounds matching the statusline style
 local TablineBufferBlock = utils.surround({ " ", "" }, function(self)
   if self.is_active then
-    return "lavender"
+    return "peach"
   else
     return "surface1"
   end
