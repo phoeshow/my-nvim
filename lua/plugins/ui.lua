@@ -20,16 +20,16 @@ end
 function M.colorizer()
   local colorizer = require("colorizer")
   colorizer.setup({})
-  vim.keymap.set("n", "<leader>tc",function ()
+  vim.keymap.set("n", "<leader>tc", function()
     local is_attached = colorizer.is_buffer_attached(0)
     if is_attached then
       colorizer.detach_from_buffer(0)
-      vim.notify("Colorizer detach", vim.log.levels.INFO )
+      vim.notify("Colorizer detach", vim.log.levels.INFO)
     else
       colorizer.attach_to_buffer()
-      vim.notify("Colorizer attach", vim.log.levels.INFO )
+      vim.notify("Colorizer attach", vim.log.levels.INFO)
     end
-  end, {desc = "Toggle colorizer"})
+  end, { desc = "Toggle colorizer" })
 end
 
 function M.bufferline()
@@ -78,7 +78,11 @@ end
 
 function M.todo_comment()
   require("todo-comments").setup({})
-  vim.keymap.set("n", "<leader>ft", "<cmd>TodoQuickFix<cr>", {desc = "Find TODO"})
+  vim.keymap.set("n", "<leader>ft", "<cmd>TodoQuickFix<cr>", { desc = "Find TODO" })
+end
+
+function M.markdownrender()
+  require("render-markdown").setup({})
 end
 
 return M

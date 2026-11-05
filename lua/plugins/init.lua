@@ -20,7 +20,6 @@ vim.pack.add({
 
   -- Statusline
   "https://github.com/rebelot/heirline.nvim",
-  -- "https://github.com/akinsho/bufferline.nvim",
 
   -- Treesitter
   { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },
@@ -38,8 +37,7 @@ vim.pack.add({
 
   -- Blink.cmp
   "https://github.com/rafamadriz/friendly-snippets",
-  "https://github.com/saghen/blink.lib",
-  "https://github.com/saghen/blink.cmp",
+  { src = "https://github.com/saghen/blink.cmp", version = vim.version.range("1.*") },
 
   -- Formatting
   "https://github.com/stevearc/conform.nvim",
@@ -67,6 +65,9 @@ vim.pack.add({
   -- Navigator in terminal pane
   "https://github.com/smart-splits-nvim/smart-splits.nvim",
   { src = "https://github.com/smart-splits-nvim/backend-tmux", name = "smart-splits-backend" },
+
+  -- Markdown render
+  "https://github.com/MeanderingProgrammer/render-markdown.nvim",
 }, {
   confirm = false,
   load = function() end,
@@ -105,14 +106,12 @@ pack.setup({
   { mod = "git", fn = "gitsigns", event = { "BufReadPre", "BufNewFile" }, packadd = { "gitsigns.nvim" } },
   { mod = "editing", fn = "flash", event = { "BufReadPre", "BufNewFile" }, packadd = { "flash.nvim" } },
   { mod = "editing", fn = "lint", event = { "BufReadPre", "BufNewFile" }, packadd = { "nvim-lint" } },
-  { mod = "ui", fn = "colorizer", event = { "BufReadPre", "BufNewFile" }, packadd = { "nvim-colorizer.lua" } },
-  -- { mod = "ui", fn = "bufferline", event = { "BufReadPre", "BufNewFile" }, packadd = { "bufferline.nvim" } },
 
   -- -------------------------------------------------------------------------
   -- InsertEnter / CmdlineEnter (completion)
   -- -------------------------------------------------------------------------
   { mod = "editing", fn = "autopairs", event = { "InsertEnter", "CmdlineEnter" }, packadd = { "nvim-autopairs" } },
-  { mod = "completion", event = { "InsertEnter", "CmdlineEnter" }, packadd = { "friendly-snippets", "blink.lib", "blink.cmp" } },
+  { mod = "completion", event = { "InsertEnter", "CmdlineEnter" }, packadd = { "friendly-snippets", "blink.cmp" } },
 
   --  -- -------------------------------------------------------------------------
   -- BufWritePre (formatting on save — conform has its own internal guard)
@@ -141,8 +140,14 @@ pack.setup({
   },
 
   -- -------------------------------------------------------------------------
+  -- Filetype
+  -- -------------------------------------------------------------------------
+  { mod = "ui", fn = "markdownrender", event = "FileType", pattern = { "markdown", "markdown_inline" }, packadd = { "render-markdown.nvim" } },
+
+  -- -------------------------------------------------------------------------
   -- Deferred (idle — load after defer ms)
   -- -------------------------------------------------------------------------
-  { mod = "ui", fn = "outline", defer = 1, packadd = { "outline.nvim" } },
-  { mod = "ui", fn = "todo_comment", defer = 1, packadd = { "plenary.nvim", "todo-comments.nvim" } },
+  { mod = "ui", fn = "colorizer", defer = 120, packadd = { "nvim-colorizer.lua" } },
+  { mod = "ui", fn = "outline", defer = 150, packadd = { "outline.nvim" } },
+  { mod = "ui", fn = "todo_comment", defer = 150, packadd = { "plenary.nvim", "todo-comments.nvim" } },
 })

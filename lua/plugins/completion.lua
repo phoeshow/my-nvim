@@ -1,6 +1,6 @@
 local cmp = require("blink.cmp")
 
-cmp.build():pwait()
+-- cmp.build():pwait()
 
 cmp.setup({
   keymap = {
@@ -16,5 +16,5 @@ cmp.setup({
   sources = {
     default = { "lsp", "path", "snippets", "buffer" },
   },
-  fuzzy = { implementation = "rust" },
+  fuzzy = { implementation = "prefer_rust_with_warning" },
 })
