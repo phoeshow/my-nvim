@@ -30,7 +30,6 @@ vim.pack.add({
   "https://github.com/neovim/nvim-lspconfig",
   "https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim",
   "https://github.com/folke/lazydev.nvim",
-  "https://github.com/j-hui/fidget.nvim",
 
   -- Outline
   "https://github.com/hedyhli/outline.nvim",
@@ -100,7 +99,6 @@ pack.setup({
   -- -------------------------------------------------------------------------
   { mod = "lsp", event = { "BufReadPre", "BufNewFile" }, packadd = { "nvim-lspconfig", "mason.nvim", "mason-lspconfig.nvim", "mason-tool-installer.nvim" } },
   { mod = "lsp", fn = "lazydev", event = { "BufReadPre", "BufNewFile" }, pattern = { "*.lua" }, packadd = { "lazydev.nvim" } },
-  { mod = "lsp", fn = "fidget", event = { "BufReadPre", "BufNewFile" }, packadd = { "fidget.nvim" } },
   { mod = "editing", fn = "autotag", event = { "BufReadPre", "BufNewFile" }, packadd = { "nvim-ts-autotag" } },
   { mod = "treesitter", event = { "BufReadPre", "BufNewFile" }, packadd = { "nvim-treesitter" } },
   { mod = "git", fn = "gitsigns", event = { "BufReadPre", "BufNewFile" }, packadd = { "gitsigns.nvim" } },

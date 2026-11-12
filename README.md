@@ -19,7 +19,7 @@ lua/plugins/
   navigator.lua            smart-splits 跨 tmux 窗格导航
   nvim-tree.lua            文件树
   ui.lua                   which-key / colorizer / outline / todo / markdown 模块函数
-  lsp.lua                  mason + lspconfig + lazydev + fidget
+  lsp.lua                  mason + lspconfig + lazydev
   completion.lua           blink.cmp
   editing.lua              conform / lint / autopairs / autotag / flash / grug-far
   git.lua                  gitsigns / diffview
@@ -84,7 +84,7 @@ nvim-pack-lock.json         插件锁文件（版本/commit 固定，已被 .git
 | 立即 | catppuccin、snacks、navigator(smart-splits) |
 | `VimEnter` | nvim-tree |
 | `UIEnter` | heirline、ui.which_key |
-| `BufReadPre`/`BufNewFile` | lsp、treesitter、gitsigns、flash、lint、autotag；`*.lua` 额外加载 lazydev；fidget |
+| `BufReadPre`/`BufNewFile` | lsp、treesitter、gitsigns、flash、lint、autotag；`*.lua` 额外加载 lazydev |
 | `InsertEnter`/`CmdlineEnter` | blink.cmp、autopairs |
 | `BufWritePre` | conform（保存时格式化） |
 | 首次按键 | diffview（`<leader>gd`/`<leader>gh`）、grug-far（`<leader>sr`） |
@@ -203,7 +203,6 @@ nvim-pack-lock.json         插件锁文件（版本/commit 固定，已被 .git
 - `mason.nvim` + `mason-lspconfig.nvim` + `mason-tool-installer.nvim`：自动安装管理 lua_ls、vtsls、rust_analyzer、tailwindcss、cssls、html，以及 stylua、eslint_d、oxfmt
 - `nvim-lspconfig`：使用新版 `vim.lsp.config` API 配置
 - `lazydev.nvim`：Lua 开发补全 luv/snacks 库（检测到 `.luarc.json` 时禁用）
-- `fidget.nvim`：LSP 进度提示
 - `blink.cmp`：补全，`enter` 预设键位，`<C-s>` 显示/隐藏文档，来源 lsp/path/snippets/buffer，fuzzy 用 Rust 实现，自动括号
 - `friendly-snippets`：内置代码片段
 
