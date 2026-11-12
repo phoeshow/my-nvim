@@ -167,6 +167,133 @@ local Diagnostics = {
   },
 }
 
+-- ---------------------------------------------------------------------------
+-- LSP Progress
+-- ---------------------------------------------------------------------------
+-- vim.lsp.status() consumes the clients' progress ring buffer, so the pending
+-- progress sequences are tracked here from LspProgress events instead.
+local lsp_progress = {
+  -- spinner shown while a progress sequence is unfinished
+  frames = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" },
+  index = 1,
+  items = {}, -- "client_id:token" -> { title, message, percentage }
+  order = {}, -- keys of items in arrival order
+  timer = nil,
+}
+
+local function lsp_progress_text()
+  local key = lsp_progress.order[#lsp_progress.order]
+  local item = key and lsp_progress.items[key]
+  if not item then
+    return nil
+  end
+  local text = item.title or ""
+  if item.message and item.message ~= "" then
+    text = text ~= "" and (text .. ": " .. item.message) or item.message
+  end
+  if text == "" and not item.percentage then
+    return nil
+  end
+  text = (text:gsub("%%", "%%%%")) -- statusline escapes
+  if item.percentage then
+    text = text .. " " .. item.percentage .. "%%"
+  end
+  if #lsp_progress.order > 1 then
+    text = text .. (" +%d"):format(#lsp_progress.order - 1)
+  end
+  return text
+end
+
+local function lsp_progress_spin()
+  if not lsp_progress.timer then
+    lsp_progress.timer = vim.uv.new_timer()
+  end
+  if lsp_progress.timer:is_active() then
+    return
+  end
+  lsp_progress.timer:start(
+    0,
+    120,
+    vim.schedule_wrap(function()
+      if #lsp_progress.order == 0 then
+        lsp_progress.timer:stop()
+        lsp_progress.index = 1
+      else
+        lsp_progress.index = lsp_progress.index % #lsp_progress.frames + 1
+      end
+      vim.cmd("redrawstatus")
+    end)
+  )
+end
+
+local lsp_progress_group = vim.api.nvim_create_augroup("heirline_lsp_progress", { clear = true })
+
+vim.api.nvim_create_autocmd("LspProgress", {
+  group = lsp_progress_group,
+  callback = function(ev)
+    local data = ev.data or {}
+    local params = data.params or {}
+    local value = params.value
+    if type(value) ~= "table" then
+      return
+    end
+    local key = tostring(data.client_id) .. ":" .. tostring(params.token)
+    if value.kind == "end" then
+      if lsp_progress.items[key] then
+        lsp_progress.items[key] = nil
+        for i, k in ipairs(lsp_progress.order) do
+          if k == key then
+            table.remove(lsp_progress.order, i)
+            break
+          end
+        end
+      end
+    else
+      local item = lsp_progress.items[key]
+      if not item then
+        item = {}
+        lsp_progress.items[key] = item
+        lsp_progress.order[#lsp_progress.order + 1] = key
+      end
+      -- `report`/`end` messages carry over the title of their `begin` message
+      item.title = value.title or item.title
+      item.message = value.message or item.message
+      item.percentage = value.percentage or item.percentage
+      lsp_progress_spin()
+    end
+    vim.cmd("redrawstatus")
+  end,
+})
+
+-- drop sequences left behind by clients that went away mid-progress
+vim.api.nvim_create_autocmd("LspDetach", {
+  group = lsp_progress_group,
+  callback = function(ev)
+    local prefix = tostring(ev.data.client_id) .. ":"
+    local kept = {}
+    for _, key in ipairs(lsp_progress.order) do
+      if key:sub(1, #prefix) == prefix then
+        lsp_progress.items[key] = nil
+      else
+        kept[#kept + 1] = key
+      end
+    end
+    lsp_progress.order = kept
+    vim.cmd("redrawstatus")
+  end,
+})
+
+local LSPProgress = {
+  provider = function()
+    local text = lsp_progress_text()
+    if not text then
+      return ""
+    end
+    return lsp_progress.frames[lsp_progress.index] .. " " .. text .. " "
+  end,
+  hl = { fg = "lavender" },
+}
+
 local MacroRec = {
   condition = function()
     return vim.fn.reg_recording() ~= ""
@@ -314,6 +441,7 @@ local DefaultStatusline = {
   Space,
   MacroRec,
   Align,
+  LSPProgress,
   FileEncoding,
   Space,
   FileFormat,

@@ -188,7 +188,7 @@ nvim-pack-lock.json         插件锁文件（版本/commit 固定，已被 .git
 
 **主题与外观**
 - `catppuccin`：Mocha 风格，透明背景，自定义 cursorline / blink / nvim-tree / indent 高亮
-- `heirline.nvim`：手写 statusline（模式块、文件名、诊断、宏录制、编码、文件格式、LSP、位置、git 分支与增删改）、winbar（图标 + 自适应相对路径，最多裁掉 5 级目录）、tabline（buffer 列表 + 多 tab 页，NvimTree 侧显示标题偏移）
+- `heirline.nvim`：手写 statusline（模式块、文件名、诊断、宏录制、编码、文件格式、LSP、LSP 进度 spinner、位置、git 分支与增删改）、winbar（图标 + 自适应相对路径，最多裁掉 5 级目录）、tabline（buffer 列表 + 多 tab 页，NvimTree 侧显示标题偏移）
 - `nvim-web-devicons`：文件类型图标
 - `which-key.nvim`：leader 分组提示
 - `nvim-colorizer.lua`：颜色值内联显示（延迟 120ms）
