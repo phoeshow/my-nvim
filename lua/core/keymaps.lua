@@ -7,6 +7,20 @@ vim.keymap.set("n", "x", '"_x', { noremap = true, silent = true })
 -- do not copy when visual paste
 vim.keymap.set("v", "p", '"_dP', { noremap = true, silent = true })
 
+-- yank current file's relative path with cursor line, e.g. lua/plugins/init.lua#L10
+vim.keymap.set("n", "<leader>yf", function()
+  local name = vim.api.nvim_buf_get_name(0)
+  if name == "" then
+    vim.notify("Current buffer has no file name", vim.log.levels.WARN)
+    return
+  end
+  local path = vim.fs.relpath(vim.fn.getcwd(), vim.fs.normalize(name)) or name
+  local text = ("%s#L%d"):format(path, vim.api.nvim_win_get_cursor(0)[1])
+  vim.fn.setreg("+", text, "v")
+  vim.fn.setreg('"', text, "v")
+  vim.notify("Yanked: " .. text, vim.log.levels.INFO)
+end, { desc = "Copy relative path with line number" })
+
 -- Split window
 vim.keymap.set("n", "<leader>wh", "<CMD>split<CR>", { desc = "Split window horizontally" })
 vim.keymap.set("n", "<leader>w-", "<CMD>split<CR>", { desc = "Split window horizontally" })

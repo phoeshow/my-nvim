@@ -101,6 +101,7 @@ nvim-pack-lock.json         插件锁文件（版本/commit 固定，已被 .git
 | `<leader>wh` 或 `<leader>w-` | 水平分屏 |
 | `<leader>wv` 或 `<leader>w\` | 垂直分屏 |
 | `<leader>wd` | 关闭窗口 |
+| `<leader>yf` | 复制当前文件的相对路径和光标所在的行号，格式类似`lua/plugins/init.lua#L10` |
 | `<C-Up/Down/Left/Right>` | 调整窗口高 / 宽 |
 | `<A-j>` / `<A-k>` | 下移 / 上移当前行（可视模式保持选区） |
 | `x` | 删除字符但不写入寄存器 |
