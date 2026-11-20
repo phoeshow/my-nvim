@@ -32,6 +32,7 @@ vim.list_extend(ensure_installed, {
   "stylua", -- Lua formatter
   "eslint_d", -- JS/TS linter
   "oxfmt", -- js formatter
+  "markdownlint", -- markdown linter
 })
 
 require("mason-tool-installer").setup({ ensure_installed = ensure_installed })

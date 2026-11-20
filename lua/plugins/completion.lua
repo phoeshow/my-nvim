@@ -3,6 +3,10 @@ local cmp = require("blink.cmp")
 -- cmp.build():pwait()
 
 cmp.setup({
+  -- markdown 中不启用补全（菜单/签名帮助），cmdline 补全不受影响
+  enabled = function()
+    return vim.bo.filetype ~= "markdown"
+  end,
   keymap = {
     preset = "enter",
     ["<C-space>"] = {},
