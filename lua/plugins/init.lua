@@ -112,9 +112,10 @@ pack.setup({
   { mod = "completion", event = { "InsertEnter", "CmdlineEnter" }, packadd = { "friendly-snippets", "blink.cmp" } },
 
   --  -- -------------------------------------------------------------------------
-  -- BufWritePre (formatting on save — conform has its own internal guard)
+  -- BufReadPre / BufNewFile (formatting: conform must be set up before the first
+  -- BufWritePre, otherwise the autocmd it registers cannot join that same event)
   -- -------------------------------------------------------------------------
-  { mod = "editing", fn = "format", event = { "BufWritePre" }, packadd = { "conform.nvim" } },
+  { mod = "editing", fn = "format", event = { "BufReadPre", "BufNewFile" }, packadd = { "conform.nvim" } },
 
   -- -------------------------------------------------------------------------
   -- Keymap-triggered (first keypress loads the module, then replays the key)

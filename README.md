@@ -84,9 +84,8 @@ nvim-pack-lock.json         插件锁文件（版本/commit 固定，已被 .git
 | 立即 | catppuccin、snacks、navigator(smart-splits) |
 | `VimEnter` | nvim-tree |
 | `UIEnter` | heirline、ui.which_key |
-| `BufReadPre`/`BufNewFile` | lsp、treesitter、gitsigns、flash、lint、autotag；`*.lua` 额外加载 lazydev |
+| `BufReadPre`/`BufNewFile` | lsp、treesitter、gitsigns、flash、lint、autotag、conform（保存时格式化）；`*.lua` 额外加载 lazydev |
 | `InsertEnter`/`CmdlineEnter` | blink.cmp、autopairs |
-| `BufWritePre` | conform（保存时格式化） |
 | 首次按键 | diffview（`<leader>gd`/`<leader>gh`）、grug-far（`<leader>sr`） |
 | `FileType markdown*` | render-markdown |
 | 延迟 120/150ms | colorizer、outline、todo-comments |
@@ -213,7 +212,7 @@ nvim-pack-lock.json         插件锁文件（版本/commit 固定，已被 .git
 - `grug-far.nvim`：项目级搜索替换，自动按当前文件扩展名过滤
 
 **格式化 / 检查**
-- `conform.nvim`：保存时格式化，`lsp_format=fallback`；lua→stylua，js/ts/jsx/tsx/md/html/yaml/toml/css/json/jsonc→oxfmt
+- `conform.nvim`：保存时格式化，`lsp_format=fallback`；lua→stylua，js/ts/jsx/tsx/md/html/yaml/toml/css/json/jsonc→oxfmt，markdown 额外先过一遍 `autocorrect`（CJK 与英文/数字之间补空格）
 - `nvim-lint`：js/ts/jsx/tsx 用 `eslint_d`，在 `BufEnter`/`BufWritePost`/`InsertLeave` 触发且仅在可修改 buffer
 
 **Git**

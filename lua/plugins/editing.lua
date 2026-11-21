@@ -24,7 +24,8 @@ function M.format()
       typescript = { "oxfmt" },
       javascriptreact = { "oxfmt" },
       typescriptreact = { "oxfmt" },
-      markdown = { "oxfmt" },
+      -- autocorrect 补 CJK 与英文/数字之间的空格（盘古之白），再由 oxfmt 负责 markdown 排版
+      markdown = { "autocorrect", "oxfmt" },
       html = { "oxfmt" },
       yaml = { "oxfmt" },
       toml = { "oxfmt" },
